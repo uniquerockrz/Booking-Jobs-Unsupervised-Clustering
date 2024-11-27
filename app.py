@@ -7,7 +7,11 @@ import pandas as pd
 from collections import Counter
 
 # Initialize FastAPI app
-app = FastAPI()
+app = FastAPI(
+    title="Job Clustering API",
+    description="An API to classify job description text into predefined clusters using a unsupervised learning.",
+    version="1.0.0"
+)
 
 # Load Pre-trained K-Means Model and Embedding Model
 try:
@@ -29,6 +33,12 @@ custom_stopwords = [
 # Define input data model
 class TextInput(BaseModel):
     text: str
+    class Config:
+        schema_extra = {
+            "example": {
+                "text": "The job description."
+            }
+        }
 
 # Preprocessing function
 def preprocess_text(text: str) -> str:
@@ -49,7 +59,11 @@ def keywords_and_teams(cluster_df):
     return most_common_words, top_teams
 
 # Endpoint to predict cluster
-@app.post("/predict/")
+@app.post("/predict/",
+    tags=["Unsupervised Classification"],
+    summary="Predict Text Cluster",
+    description="Classify the input text into one of the predefined clusters using a unsupervised classification.",
+    response_description="The cluster label, the top keywords of th cluster and the top predicted departments.")
 async def predict_cluster(input: TextInput):
     try:
         # Preprocess input text
