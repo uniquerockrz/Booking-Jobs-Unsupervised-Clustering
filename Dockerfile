@@ -1,5 +1,5 @@
 # Use the official Python image as a base
-FROM ubuntu:24.04
+FROM python:3.11-bookworm
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -9,14 +9,11 @@ COPY requirements.txt /app/
 
 # install apt packages
 RUN apt-get update
-RUN apt-get install -y build-essential python3 python3-pip python3-venv
-
-RUN python3 -m venv .venv
-ENV PATH=".venv/bin:$PATH"
+RUN apt-get install -y build-essential python3 python3-pip
 
 # Install the required Python packages
-RUN pip install -U --upgrade pip
-RUN pip install -U --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the FastAPI app code into the container
 COPY . /app/
